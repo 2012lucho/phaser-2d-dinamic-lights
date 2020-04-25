@@ -3,13 +3,13 @@ class Game{
     this.lights_ctrl = new LightsController({
       'screen_w':1920,
       'screen_h':1080,
-      'scale':10,
-      'update_frame_skip':3,
+      'scale':5,
+      'update_frame_skip':1,
       'game':game
     });
 
     this.lights_ctrl.addLight({'p':[200,200], 'c':[255,255,0], 'i':255, 'enabled':true, 'b_mult':1 });
-    this.lights_ctrl.addLight({'p':[500,500], 'c':[0,255,255], 'i':255, 'enabled':true, 'b_mult':1 });
+    this.lights_ctrl.addLight({'p':[500,500], 'c':[0,255,255], 'i':255, 'enabled':true, 'b_mult':4 });
     this.lights_ctrl.addLight({'p':[200,200], 'c':[0,250,0],   'i':255, 'enabled':true, 'b_mult':1 });
 
   }
@@ -19,7 +19,7 @@ class Game{
 var config = {
     width: 960,
     height: 540,
-    type: Phaser.CANVAS,
+    type: Phaser.WEBGL,
     parent: 'phaser-example',
     backgroundColor: '#ffffff',
     scene: {

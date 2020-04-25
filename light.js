@@ -9,6 +9,30 @@ class Light {
     this.id         = id;
 
     this.ray_step = 1;
+    this.up_c     = 0;
+
+    this.d_x = 0;
+    this.d_y = 0;
+    this.d_v = 0.1;
+    this.ps   = 0;
+    this.e   = this.i;
+    this.px  = 0;
+    this.py  = 0;
+    this.g   = 0;
+    this.k   = 0;
+    this.brillo = 0;
+
+    this.o_m   = 0;
+    this.o     = 0;
+    this.r_c_l = 0;
+    this.g_c_l = 0;
+    this.b_c_l = 0;
+    this.r_c_m = 0;
+    this.g_c_m = 0;
+    this.b_c_m = 0;
+    this.r_c   = 0;
+    this.g_c   = 0;
+    this.b_c   = 0;
   }
 
   setPosition(x,y){
@@ -22,57 +46,56 @@ class Light {
 
   update(){
     //se trazan los rayos de la fuente de luz
-    let px  = this.p[0]; //px inicial
-    let py  = this.p[1]; // py inicial
-    let e   = this.i;    // valor de brillo, que definira la opacidad
+    this.px  = this.p[0]; //px inicial
+    this.py  = this.p[1]; // py inicial
+    this.e   = this.i;    // valor de brillo, que definira la opacidad
+    //this.up_c ++;
 
-    for (let g=0; g < 360; g+= this.ray_step){ // se crean los "rayos de luz", es una fuente puntual
+    for (this.g=0; this.g < 360; this.g+= this.ray_step){ // se crean los "rayos de luz", es una fuente puntual
       //d_y = opuesto d_x =adyacente d_v = hipotenusa
       //d_y = desplazamiento y d_x = desplazamiento x  game.loop.actualFps
-      let d_y, d_x, d_v = 0;
-      d_v = 0.1;
+      this.d_y = Math.sin(this.g+this.up_c)*this.d_v;
+      this.d_x = Math.cos(this.g+this.up_c)*this.d_v;
 
-      d_y = Math.sin(g)*d_v;
-      d_x = Math.cos(g)*d_v;
+      for(this.brillo = 1; this.brillo < this.e*this.b_mult; this.brillo++){
+          this.px = this.d_x*this.brillo+this.p[0];
+          this.py = this.d_y*this.brillo+this.p[1];
 
-      for(let brillo = 1; brillo < e*this.b_mult; brillo++){
-          px=d_x*brillo+this.p[0];
-          py=d_y*brillo+this.p[1];
+          this.ps = Math.floor(this.py) * this.controller.m_width + Math.floor(this.px);
 
-          let p = Math.floor(py) * this.controller.m_width + Math.floor(px);
-
-          if(py > 0 && px > 0 && px < this.controller.m_width && py < this.controller.m_height){
-            if(this.controller.lights_obs[p] != 1  //los obstaculos no se iluminan
+          if(this.py > 0 && this.px > 0 && this.px < this.controller.m_width && this.py < this.controller.m_height){
+            if(this.controller.lights_obs[this.ps] != 1  //los obstaculos no se iluminan
                 ){
-              if (this.controller.lights_map_ul[p] != this.id){ //no se reewscribe un lugar por donde ya paso esta luz
+              if (this.controller.lights_map_ul[this.ps] != this.id){ //no se reewscribe un lugar por donde ya paso esta luz
+                  this.r_c_l = this.c[0];
+                  this.g_c_l = this.c[1];
+                  this.b_c_l = this.c[2];
 
-                  let o_m = this.controller.lights_map_o[p];
-                  let o_l = brillo/this.b_mult;
-                  let o = (o_m + o_l)/2;
+                  this.r_c_m = this.controller.lights_map_r[this.ps];
+                  this.g_c_m = this.controller.lights_map_g[this.ps];
+                  this.b_c_m = this.controller.lights_map_b[this.ps];
 
-                  let r_c_l = this.c[0];
-                  let g_c_l = this.c[1];
-                  let b_c_l = this.c[2];
-
-                  let r_c_m = this.controller.lights_map_r[p];
-                  let g_c_m = this.controller.lights_map_g[p];
-                  let b_c_m = this.controller.lights_map_b[p];
+                  //
+                  this.k = 255-this.brillo/this.b_mult;
+                  this.r_c_l = this.r_c_l / (255/this.k);
+                  this.g_c_l = this.g_c_l / (255/this.k);
+                  this.b_c_l = this.b_c_l / (255/this.k);
 
                   //suma de las luces
-                  let r_c = Math.round((1 - (1 - r_c_l / 255) * (1 - r_c_m / 255)) * 255);
-                  let g_c = Math.round((1 - (1 - g_c_l / 255) * (1 - g_c_m / 255)) * 255);
-                  let b_c = Math.round((1 - (1 - b_c_l / 255) * (1 - b_c_m / 255)) * 255);
+                  this.r_c = Math.round((1 - (1 - this.r_c_l / 255) * (1 - this.r_c_m / 255)) * 255);
+                  this.g_c = Math.round((1 - (1 - this.g_c_l / 255) * (1 - this.g_c_m / 255)) * 255);
+                  this.b_c = Math.round((1 - (1 - this.b_c_l / 255) * (1 - this.b_c_m / 255)) * 255);
 
-                  //transicion a negro de acuerdo a la luminosidad
-                  r_c = r_c - ((r_c_l/255)*o);
-                  g_c = g_c - ((g_c_l/255)*o);
-                  b_c = b_c - ((b_c_l/255)*o);
+                  this.controller.lights_map_r [this.ps]  = this.r_c;
+                  this.controller.lights_map_g [this.ps]  = this.g_c;
+                  this.controller.lights_map_b [this.ps]  = this.b_c;
+                  this.controller.lights_map_ul[this.ps]  = this.id;
 
-                  this.controller.lights_map_r[p]  = r_c;
-                  this.controller.lights_map_g[p]  = g_c;
-                  this.controller.lights_map_b[p]  = b_c;
-                  this.controller.lights_map_o[p]  = o;
-                  this.controller.lights_map_ul[p] = this.id;
+                  this.controller.data[this.ps] =
+                      (255 << 24)      | // alpha
+                      (this.b_c << 16) | // blue
+                      (this.g_c <<  8) | // green
+                       this.r_c;         // red
               }
             } else { //el rayo termina aca
               break;
