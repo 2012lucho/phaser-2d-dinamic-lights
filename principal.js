@@ -4,13 +4,13 @@ class Game{
       'screen_w':1920,
       'screen_h':1080,
       'scale':5,
-      'update_frame_skip':1,
+      'update_frame_skip':0,
       'game':game
     });
 
-    this.lights_ctrl.addLight({'p':[200,200], 'c':[255,255,0], 'i':255, 'enabled':true, 'b_mult':1 });
-    this.lights_ctrl.addLight({'p':[500,500], 'c':[0,255,255], 'i':255, 'enabled':true, 'b_mult':4 });
-    this.lights_ctrl.addLight({'p':[200,200], 'c':[0,250,0],   'i':255, 'enabled':true, 'b_mult':1 });
+    this.lights_ctrl.addLight({'p':[200,200], 'c':[255,255,0], 'enabled':1, 'b_mult':0.5 });
+    this.lights_ctrl.addLight({'p':[500,500], 'c':[0,255,255], 'enabled':1, 'b_mult':0.5 });
+    this.lights_ctrl.addLight({'p':[200,200], 'c':[0,250,0],   'enabled':1, 'b_mult':0.5 });
 
   }
 }
@@ -19,8 +19,9 @@ class Game{
 var config = {
     width: 960,
     height: 540,
-    type: Phaser.WEBGL,
+    type: Phaser.CANVAS,
     parent: 'phaser-example',
+    pixelArt: 0,
     backgroundColor: '#ffffff',
     scene: {
         create: create,
@@ -60,7 +61,7 @@ function create ()
 function newObs(x,y){
   for (let i=0; i< 100;i++){
     ligthController.setObsPixel(x+i,y+i,1);
-    ligthController.setObsPixel(x+i,y+i+10,1);
+    ligthController.setObsPixel(x+i,y+i+ligthController.scale,1);
   }
 }
 
@@ -71,9 +72,9 @@ function update ()
 
     ligthController.setLightPosition(1, game.input.mousePointer.position.x, game.input.mousePointer.position.y);
 
-    ddd++;
-    if(ddd>100){ ligthController.setLightEnabled(2,true); }
-    if(ddd>200){ ligthController.setLightEnabled(2,false); ddd=0; }
+  //  ddd++;
+//    if(ddd>100){ ligthController.setLightEnabled(2,true); }
+  //  if(ddd>200){ ligthController.setLightEnabled(2,false); ddd=0; }
 
   //
 }

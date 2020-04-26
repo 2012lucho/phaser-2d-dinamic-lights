@@ -32,7 +32,7 @@ class LightsController {
 
     //se agrega la luz
     this.light_count ++;
-    this.lights[this.light_count] = new Light(c, this, this.light_count);
+    this.lights[this.light_count] = new PuntualLight(c, this, this.light_count);
 
     return this.light_count;
   }
