@@ -1,4 +1,4 @@
 # phaser-2d-dinamic-lights
 Dinamic lights emulation for phaser
 
-Example: https://greenborn.com.ar/lab/light2d/
+Example: https://demos.greenborn.com.ar/phaser-2d-dinamic-lights/
